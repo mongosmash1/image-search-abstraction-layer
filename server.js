@@ -12,6 +12,10 @@ var mongoResults = function(err, res) {
   return results;
 }
 
+/* 
+https://developers.google.com/custom-search/json-api/v1/overview
+*/
+
 app.use('/public', express.static(process.cwd() + '/public'));
 
 // serves static file by default containing instructions to use this microservice
@@ -20,26 +24,28 @@ app.route('/')
     res.sendFile(process.cwd() + '/views/index.html');
   });
 
-// retrieve stored url and redirect user
-app.route('/:urlCode')
+// retrieve 10 most recent image searches
+app.route('api/imagesearch/latest/')
   .get(function(req, res) {
-    let urlCode = req.params.urlCode;
+    let qty = 10;
     // redirects to stored url if it exists
-    datastore.get('urlCode', urlCode, function(err, doc) {
+    datastore.get(qty, function(err, doc) {
       if (err) throw err;
       if (!doc) {
         res.status(404);
         res.type('txt').send('No record found for that shortened URL');
       } else {
-      let redirectToUrl = doc.urlTarget;
-      res.redirect(redirectToUrl);
+      // let redirectToUrl = doc.urlTarget;
+      // res.redirect(redirectToUrl);
+        res.json();
       }
     });
   });
 
 
 // create shortened url
-app.route('/api/url/*')
+// need to account for offset parameter "?offset=x"
+app.route('api/imagesearch/*')
   .get(function(req, res) {
     let originalURL = req.params[0];
     let shortURL = 'https://ms1-url-micro.glitch.me/';

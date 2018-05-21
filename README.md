@@ -1,30 +1,27 @@
-<b>URL Shortener Microservice</b><br>
-freeCodeCamp URL Shortener Microservice Basejump
+<b>Image Search Abstraction Layer Microservice</b><br>
+freeCodeCamp Image Search Abstraction Layer Microservice Basejump
 
-<b>Objective:</b> Build a full stack JavaScript app that is functionally similar to <a href="https://little-url.herokuapp.com/">this</a> and deploy it to Glitch.
+<b>Objective:</b> Build a full stack JavaScript app that allows you to search for images like <a href="https://cryptic-ridge-9197.herokuapp.com/api/imagesearch/lolcats%20funny?offset=10">this</a>, and browse recent search queries like <a href="https://cryptic-ridge-9197.herokuapp.com/api/latest/imagesearch/">this</a>. Then deploy it to Glitch.
 
 Note that for each project, you should create a new GitHub repository and a new Glitch project. If you can't remember how to do this, revisit <a href="https://freecodecamp.org/challenges/get-set-for-our-api-development-projects">this</a>.
 
 Here are the specific user stories you should implement for this project:
 
-<b>User Story:</b> I can pass a URL as a parameter and I will receive a shortened URL in the JSON response.
+<b>User Story:</b> I can get the image URLs, alt text and page urls for a set of images relating to a given search string.
 
-<b>User Story:</b> If I pass an invalid URL that doesn't follow the valid http://www.example.com format, the JSON response will contain an error instead.
+<b>User Story:</b> I can paginate through the responses by adding a ?offset=2 parameter to the URL.
 
-<b>User Story:</b> When I visit that shortened URL, it will redirect me to my original link.
+<b>User Story:</b> I can get a list of the most recently submitted search strings.
 
-<b>Pro Tip:</b> Checkout this <a href="https://forum.freecodecamp.org/t/guide-for-using-mongodb-and-deploying-to-heroku/19347">wiki article</a> for tips on integrating MongoDB on Glitch.
+<b>Example image search with pagination</b><br>
+<code>https://ms1-isal-micro.glitch.me/api/imagesearch/lolcats%20funny?offset=2</code>
 
-<b>Example URL creation usage:</b><br>
-<code>https://ms1-url-micro.glitch.me/api/url/https://www.google.com</code><br>
-<code>https://ms1-url-micro.glitch.me/api/url/http://foo.com:80</code><br>
+<b>Example results</b><br>
+<code>[{"url":"https://i.ytimg.com/vi/tRzXptpC3_U/hqdefault.jpg","snippet":"funny lolcats and loldogs - YouTube","thumbnail":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS_dKvb6pMA0bod00g0v1Bk3YakSY7H4HYwpu268AqUK8pPiSdlUh9pEnYh","context":"https://www.youtube.com/watch?v=tRzXptpC3_U"},{"url":"http://i0.kym-cdn.com/photos/images/facebook/000/024/740/lolcats-funny-pictures-halp-not-for-sale.jpg","snippet":"Image - 24740] | LOLcats | Know Your Meme","thumbnail":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRwAVlPDkEfE65WZ-UmL7KxfK0sC9jCjwnujwvTDleqQ_BrB93WAT2m2fyQ","context":"http://knowyourmeme.com/photos/24740-lolcats"},{"url":"https://i.ytimg.com/vi/rHzOau7ZKpA/hqdefault.jpg","snippet":"Madonna Justify My Love LolCats Funny Cats - YouTube","thumbnail":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSEspafya5KS3hBmt43BQpCxvtW4mCvhRnWybRNxe3Td96L-OgnhIlup4Q","context":"https://www.youtube.com/watch?v=rHzOau7ZKpA"},{"url":"https://img.scoop.it/nCDfJ08MpKhEdCcEztDllTl72eJkfbmt4t8yenImKBVvK0kTmF0xjctABnaLJIm9","snippet":"Lolcats: Trust me. - Lolcats - Funny Pictures o...","thumbnail":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRzlqyqamk-b85EzibpHcYlfc6i8luNd803igOeN9NL2g5C_I5-oa2P1A","context":"https://www.scoop.it/t/crazy-cats/p/1661402930/2012/04/25/lolcats-trust-me-lolcats-funny-pictures-of-cats-i-can-has"},{"url":"https://i.ytimg.com/vi/dWpGC6Fg0io/hqdefault.jpg","snippet":"Jas Patrick sings Snow Day starring LOLCats Funny Cats - YouTube","thumbnail":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNMCLSl2dHm87xTU6uMFZD0Jym2E-4lAaSdJzfc_6OkeB_CdF1vjgZZsR2","context":"https://www.youtube.com/watch?v=dWpGC6Fg0io"},{"url":"http://i0.kym-cdn.com/photos/images/newsfeed/000/010/017/lolcats-funny-pictures-surprise-cannibalism.jpg","snippet":"Image - 10017] | LOLcats | Know Your Meme","thumbnail":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT_3LXRSIoZhjjSnZYvCE67Yxf4XR-dxpkhIVMU8FQhpRqWpKUeXaJmNCc","context":"http://knowyourmeme.com/photos/10017-lolcats"},{"url":"https://i.ytimg.com/vi/NTB0tZbWAKI/hqdefault.jpg","snippet":"The Funniest Cat Video !lolcats.funny cats compilations 2016,funny ...","thumbnail":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSvBUxEN17wIIwT9VmXD_5c0_g3WfLVQXHbxJS9ZD_xTgs8hdjtArD04Xw","context":"https://www.youtube.com/watch?v=NTB0tZbWAKI"},{"url":"https://img.scoop.it/x8i52qi4sSpOAY6X7uI7QDl72eJkfbmt4t8yenImKBVvK0kTmF0xjctABnaLJIm9","snippet":"Inside every grumpy old cat - Lolcats 'n' Funny...","thumbnail":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQKbaDRglDFQFKJtR_P-x_J4o8DXX9zOSgoK2JforLo32LcmBCm-JY970o","context":"https://www.scoop.it/t/cats-rule-the-world/p/518914244/2011/10/07/inside-every-grumpy-old-cat-lolcats-n-funny-pictures-of-cats-i"},{"url":"http://i0.kym-cdn.com/photos/images/original/000/010/017/lolcats-funny-pictures-surprise-cannibalism.jpg","snippet":"Image - 10017] | LOLcats | Know Your Meme","thumbnail":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSXBpDueya0bfWRnj-q0FfTmx01gdr1kCCSlfZ3brV8-oiVQKjZ1YwKb6c","context":"http://knowyourmeme.com/photos/10017-lolcats"},{"url":"https://i.ytimg.com/vi/mF7Gg014sYU/maxresdefault.jpg","snippet":"Lolcats (kid friendly, but still funny) - YouTube","thumbnail":"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9TzjwPn7_PSKPBgbnGBJSk83qSFNJpRK-6XTwyrGZaaCSYXSEL0ALKMx4","context":"https://www.youtube.com/watch?v=mF7Gg014sYU"}]</code>
 
-<b>Example URL creation output:</b><br>
-<code>{ "original_url":"http://foo.com:80", "short_url":"https://ms1-url-micro.glitch.me/ff6c4a0b" }</code>
+<br>
+<b>Example usage of most recently submitted searches</b><br>
+<code>https://ms1-isal-micro.glitch.me/api/imagesearch/latest/</code>
 
-
-<b>Example URL usage</b><br>
-<code>https://ms1-url-micro.glitch.me/290b2b60</code>
-
-<b>Example URL redirects to</b><br>
-<code>https://www.google.com</code>
+<b>Example results</b><br>
+<code>[{"term":"lolcats funny","when":"2018-05-21T05:42:49.830Z"},{"term":"lolcats funny","when":"2018-05-21T05:41:58.539Z"},{"term":"lolcats funny","when":"2018-05-21T05:41:51.853Z"},{"term":"lolcats funny","when":"2018-05-21T05:41:25.418Z"},{"term":"lolcats funny","when":"2018-05-21T05:40:43.779Z"},{"term":"lolcats funny","when":"2018-05-21T05:40:00.827Z"},{"term":"lolcats funny","when":"2018-05-21T05:39:57.370Z"},{"term":"lolcats funny","when":"2018-05-21T05:39:53.634Z"},{"term":"lolcats funny","when":"2018-05-21T05:39:42.678Z"},{"term":"lolcats funny","when":"2018-05-21T05:36:57.130Z"}]</code>
