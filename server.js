@@ -2,9 +2,9 @@
 
 const express = require('express');
 const app = express();
+const https = require('https');
 const port = process.env.PORT;
 const datastore = require('./datastore.js'); // mongodb datastore
-const validUrl = require('valid-url'); // to check for url validity
 
 var mongoResults = function(err, res) {
   console.log(res);
@@ -13,7 +13,18 @@ var mongoResults = function(err, res) {
 }
 
 /* 
-https://developers.google.com/custom-search/json-api/v1/overview
+Google Image Search API
+https://developers.google.com/custom-search/json-api/v1/reference/cse/list#parameters
+
+https://www.googleapis.com/customsearch/v1?
+q=lol%20cats
+num=10
+searchType=image
+start=0
+cx=011081963948109566827:-rx_xpboj3e
+key=AIzaSyDW6bo_oMpW8ShElmRaBK4fNfYsSejXQhs
+
+https://www.googleapis.com/customsearch/v1?q=lol%20cats&num=10&searchType=image&cx=011081963948109566827:-rx_xpboj3e&key=AIzaSyDW6bo_oMpW8ShElmRaBK4fNfYsSejXQh
 */
 
 app.use('/public', express.static(process.cwd() + '/public'));
@@ -43,41 +54,51 @@ app.route('api/imagesearch/latest/')
   });
 
 
-// create shortened url
+// retrieve data related to submitted search term
+// store search in database
 // need to account for offset parameter "?offset=x"
-app.route('api/imagesearch/*')
+app.route('/api/imagesearch/*')
   .get(function(req, res) {
-    let originalURL = req.params[0];
-    let shortURL = 'https://ms1-url-micro.glitch.me/';
-    // if invalid URI submitted, return json error
-    if (!validUrl.isWebUri(originalURL)){
-      res.status(400);
-      res.type('txt').send('Bad Request: "' + originalURL + '" is not a valid URL');
-      res.end;
-    }
-    // check if submitted URL is already in the database
-    else {
-      datastore.get('urlTarget', originalURL, function(err, doc) {
-      if (err) throw err;
-      if (doc) {
-        originalURL = doc.urlTarget;
-        shortURL += doc.urlCode;
-        res.json({ original_url: originalURL, short_url: shortURL });
-        // if new URL, create and code and return json
-      } else {
-        datastore.put(originalURL);
-        datastore.get('urlTarget', originalURL, function(err, doc) {
-          if (err) throw err;
-          if (doc) {
-            originalURL = doc.urlTarget;
-            shortURL += doc.urlCode;
-            res.json({ original_url: originalURL, short_url: shortURL });
-          }
-        });
-      }
+    let searchTerm = req.params[0].split('?offset=')[0];
+    let page = req.params[0].split('?offset=')[1] ? req.params[0].split('?offset=')[1] : null;
+    let imagesPerPage = 10;
+    // let imageStart = (page * imagesPerPage) - 1;
+    let imageStart = 1;
+    console.log(req.params);  
+    console.log(searchTerm);
+    console.log(page);
+    var pathOptions = {
+      q: searchTerm,
+      num: imagesPerPage,
+      start: imageStart,
+      cx: process.env.GOOGLE_CSE_ID,
+      key: process.env.GOOGLE_API_KEY
+    };
+    var path = '/customsearch/v1?q=' + pathOptions.q + '&num=' + pathOptions.num + '&start=' + pathOptions.start + '&searchType=image&cx=' + pathOptions.cx + '&key=' + pathOptions.key;
+    var options = {
+      host: 'www.googleapis.com',
+      method: 'GET',
+      path: encodeURIComponent(path)
+    };
+    https.get(options, function(res){
+      let rawData = '';
+      res.on('data', function(chunk){
+        rawData += chunk;
+      });
+      res.on('error', function(err){
+        console.log("Got error: " + err.message);
+      });
+      res.on('end', () => {
+        try {
+          // const parsedData = JSON.parse(rawData);
+          // console.log(parsedData);
+          console.log(rawData);
+        } catch (e) {
+          console.error(e.message);
+        }
+      });
     });
-    }
-  });
+});
 
 // respond not found for all invalid routes
 app.use(function(req, res, next){

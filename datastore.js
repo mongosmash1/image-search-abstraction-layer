@@ -7,8 +7,8 @@ const MONGODB_URI = 'mongodb://'+process.env.USER+':'+process.env.PASS+'@'+proce
 /*
 collection = image-searches
 schema = {
-  searchedTerm, (string)
-  searchedTime (javascript time format)
+  searchTerm, (string)
+  searchTime (javascript time format)
 }
 */
 
@@ -18,7 +18,7 @@ exports.get = function (qty, callback) {
     if (err) throw err;
     const db = client.db(process.env.DB);
     const images = db.collection(process.env.COLLECTION);
-    images.find().project({ _id: 0, searchedTerm: 1, searchedTime: 1 }).sort({ searchedTime: -1} ).limit(qty).toArray(function (err, docs){
+    images.find().project({ _id: 0, searchTerm: 1, searchTime: 1 }).sort({ searchTime: -1} ).limit(qty).toArray(function (err, docs){
       if (err) {
         client.close;
         callback(err);
@@ -38,7 +38,7 @@ exports.put = function (searchedTerm) {
     const images = db.collection(process.env.COLLECTION);
     // create document only
     var searchedTime = Date.now()
-    var doc = { searchedTerm: searchedTerm, searchedTime: searchedTime };
+    var doc = { searchTerm: searchTerm, searchTime: searchTime };
     images.insert(doc, function(err, doc) {
       if (err) throw err;
       client.close();
