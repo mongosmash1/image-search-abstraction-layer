@@ -3,6 +3,7 @@
 const express = require('express');
 const app = express();
 const https = require('https');
+const url = require('url');
 const port = process.env.PORT;
 const datastore = require('./datastore.js'); // mongodb datastore
 
@@ -36,7 +37,7 @@ app.route('/')
   });
 
 // retrieve 10 most recent image searches
-app.route('api/imagesearch/latest/')
+app.route('/api/latest/imagesearch/')
   .get(function(req, res) {
     let qty = 10;
     // redirects to stored url if it exists
@@ -48,7 +49,7 @@ app.route('api/imagesearch/latest/')
       } else {
       // let redirectToUrl = doc.urlTarget;
       // res.redirect(redirectToUrl);
-        res.json();
+        res.json(doc);
       }
     });
   });
@@ -59,45 +60,41 @@ app.route('api/imagesearch/latest/')
 // need to account for offset parameter "?offset=x"
 app.route('/api/imagesearch/*')
   .get(function(req, res) {
-    let searchTerm = req.params[0].split('?offset=')[0];
-    let page = req.params[0].split('?offset=')[1] ? req.params[0].split('?offset=')[1] : null;
-    let imagesPerPage = 10;
-    // let imageStart = (page * imagesPerPage) - 1;
-    let imageStart = 1;
-    console.log(req.params);  
-    console.log(searchTerm);
-    console.log(page);
-    var pathOptions = {
-      q: searchTerm,
-      num: imagesPerPage,
-      start: imageStart,
-      cx: process.env.GOOGLE_CSE_ID,
-      key: process.env.GOOGLE_API_KEY
-    };
-    var path = '/customsearch/v1?q=' + pathOptions.q + '&num=' + pathOptions.num + '&start=' + pathOptions.start + '&searchType=image&cx=' + pathOptions.cx + '&key=' + pathOptions.key;
-    var options = {
-      host: 'www.googleapis.com',
-      method: 'GET',
-      path: encodeURIComponent(path)
-    };
-    https.get(options, function(res){
+    let searchTerm = req.params[0];
+    let offset = req.query.offset;
+    let limit = 10;
+    let imageStart = (limit * (offset - 1)) + 1; // 10 items per page with offset of 2 starts at item 11 (page 2)
+    let options = url.format({
+      protocol: 'https',
+      hostname: 'www.googleapis.com',
+      pathname: '/customsearch/v1',
+      query: {
+        q: searchTerm,
+        num: limit,
+        start: imageStart,
+        searchType: 'image',
+        cx: process.env.GOOGLE_CSE_ID,
+        key: process.env.GOOGLE_API_KEY
+      }
+    });
+    let apiUrl = url.parse(options).href;
+    let results = {};
+    https.get(apiUrl, function(res){
       let rawData = '';
       res.on('data', function(chunk){
         rawData += chunk;
       });
+      res.on('end', () => {
+          // console.log(rawData);
+        results = rawData;
+        datastore.put(searchTerm);
+      });
       res.on('error', function(err){
         console.log("Got error: " + err.message);
       });
-      res.on('end', () => {
-        try {
-          // const parsedData = JSON.parse(rawData);
-          // console.log(parsedData);
-          console.log(rawData);
-        } catch (e) {
-          console.error(e.message);
-        }
-      });
     });
+  // I believe this is not working due to async
+  res.send(results);
 });
 
 // respond not found for all invalid routes
