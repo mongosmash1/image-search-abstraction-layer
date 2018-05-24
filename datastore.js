@@ -37,7 +37,7 @@ exports.put = function (searchTerm) {
     const db = client.db(process.env.DB);
     const images = db.collection(process.env.COLLECTION);
     // create document only
-    var searchTime = Date.now()
+    var searchTime = Date.now();
     var doc = { searchTerm: searchTerm, searchTime: searchTime };
     images.insert(doc, function(err, doc) {
       if (err) throw err;
