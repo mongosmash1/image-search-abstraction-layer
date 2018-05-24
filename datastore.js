@@ -31,13 +31,13 @@ exports.get = function (qty, callback) {
 }
 
 // create new document with search term used and current date/time
-exports.put = function (searchedTerm) {
+exports.put = function (searchTerm) {
   mongo.connect(MONGODB_URI, function(err, client) {
     if (err) throw err;
     const db = client.db(process.env.DB);
     const images = db.collection(process.env.COLLECTION);
     // create document only
-    var searchedTime = Date.now()
+    var searchTime = Date.now()
     var doc = { searchTerm: searchTerm, searchTime: searchTime };
     images.insert(doc, function(err, doc) {
       if (err) throw err;

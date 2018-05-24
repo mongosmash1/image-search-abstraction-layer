@@ -21,7 +21,7 @@ Here are the specific user stories you should implement for this project:
 
 <br>
 <b>Example usage of most recently submitted searches</b><br>
-<code>https://ms1-isal-micro.glitch.me/api/imagesearch/latest/</code>
+<code>https://ms1-isal-micro.glitch.me/api/latest/imagesearch/</code>
 
 <b>Example results</b><br>
 <code>[{"term":"lolcats funny","when":"2018-05-21T05:42:49.830Z"},{"term":"lolcats funny","when":"2018-05-21T05:41:58.539Z"},{"term":"lolcats funny","when":"2018-05-21T05:41:51.853Z"},{"term":"lolcats funny","when":"2018-05-21T05:41:25.418Z"},{"term":"lolcats funny","when":"2018-05-21T05:40:43.779Z"},{"term":"lolcats funny","when":"2018-05-21T05:40:00.827Z"},{"term":"lolcats funny","when":"2018-05-21T05:39:57.370Z"},{"term":"lolcats funny","when":"2018-05-21T05:39:53.634Z"},{"term":"lolcats funny","when":"2018-05-21T05:39:42.678Z"},{"term":"lolcats funny","when":"2018-05-21T05:36:57.130Z"}]</code>
